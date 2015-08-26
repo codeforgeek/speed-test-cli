@@ -1,65 +1,53 @@
 #!/usr/bin/env node
 var speedTest=require('speedtest-net');
 var ProgressBar = require('progress');
+var chalk = require("chalk");
 
 var test=speedTest({maxTime:5000});
 
-var downloadBar = new ProgressBar('Checking Download speed [:bar] :percent :etas', {
-	complete: '=',
-	incomplete: ' ',
-	width: 20,
-	total: 100
+var bar,pingTime;
+
+function prog(what,pct){
+	if (pct>=100){
+		if (bar) bar.terminate();
+		bar=null;
+		return;
+	}
+
+	if (!bar) {
+		var green = '\u001b[42m \u001b[0m',
+			red = '\u001b[41m \u001b[0m';
+
+		bar = new ProgressBar(' '+what+' [:bar] :percent', {
+			complete: green,
+			incomplete: red,
+			clear: true,
+			width:40,
+			total: 100
+		});
+	}
+
+	bar.update(pct/100);
+}
+
+test.on('testserver',function(server) {
+	pingTime = server.bestPing;
 });
 
-var uploadBar = new ProgressBar('Checking Upload speed [:bar] :percent :etas', {
-	complete: '=',
-	incomplete: ' ',
-	width: 20,
-	total: 100
+test.on('downloadprogress',function(pct){
+	prog('Checking Download Speed ',pct);
 });
 
-var pingBar =  new ProgressBar('Ping [:bar] :percent :etas', {
-	complete: '=',
-	incomplete: ' ',
-	width: 20,
-	total: 100
+test.on('uploadprogress',function(pct){
+	prog('Checking Upload Speed ',pct);
 });
 
-  test.on('downloadprogress',function(p){	  
-		downloadBar.tick(p)
-  });
+test.on('data',function(data){
+	console.log(chalk.cyan("Ping : "),Math.abs(pingTime),chalk.dim('ms'));
+	console.log(chalk.cyan("Download Speed : ") + data.speeds.download + chalk.dim(" MBps"));
+    console.log(chalk.cyan("Upload Speed : ") + data.speeds.upload + chalk.dim(" MBps"));
+});
 
-  test.on('uploadprogress',function(u){
-		uploadBar.tick(u);
-  });
-  
-  test.once('servers',function(s){
-     console.log("Found ",s.length," Servers");
-  });
-
-  test.once('bestservers',function(b){    
-    console.log("Found ",b.length," Best Servers");
-  });
-
-  test.on('testserver',function(s){
-	  pingBar.tick(s)
-	console.log("Pinging "+s);
-  });
-
-  test.once('downloadspeed',function(s){
-	console.log("Your download speed is"+(s/1000).toFixed(2));
-  });
-
-  test.once('uploadspeed',function(u){
-       console.log("Your upload speed is"+(u/1000).toFixed(2));
-  });
-
-  test.once('data',function(data){	  
-    console.log("Download and Upload :\n");
-    console.log(data.speeds.download);
-    console.log(data.speeds.upload);
-  });
-  
-  test.once('error',function(err){
-    console.error(err);
-  });
+test.on('error',function(error){
+	process.exit(1);
+});
