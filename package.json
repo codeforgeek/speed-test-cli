@@ -5,7 +5,7 @@
   "author": "",
   "license": "ISC",
   "bin": {
-    "speedtest": "Server.js"
+    "speedtest": "index.js"
   },
   "dependencies": {
     "chalk": "^1.1.1",
