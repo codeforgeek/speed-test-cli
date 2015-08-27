@@ -4,4 +4,4 @@
 
 ## Install
 
-```npm install speedtest-cli -g```
+```npm install speedtestcli -g```
