@@ -44,8 +44,8 @@ test.on('uploadprogress',function(pct){
 
 test.on('data',function(data){
 	console.log(chalk.cyan("Ping : "),Math.abs(pingTime),chalk.dim('ms'));
-	console.log(chalk.cyan("Download Speed : ") + data.speeds.download + chalk.dim(" MBps"));
-    console.log(chalk.cyan("Upload Speed : ") + data.speeds.upload + chalk.dim(" MBps"));
+	console.log(chalk.cyan("Download Speed : ") + data.speeds.download + chalk.dim(" Mbps"));
+    console.log(chalk.cyan("Upload Speed : ") + data.speeds.upload + chalk.dim(" mbps"));
 });
 
 test.on('error',function(error){
