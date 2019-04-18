@@ -1,12 +1,13 @@
 {
   "name": "speedTestCLI",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "author": "",
   "license": "ISC",
   "bin": {
     "speedtest": "index.js"
   },
+  "homepage": "https://codeforgeek.com/2015/09/command-line-application-nodejs/",
   "dependencies": {
     "chalk": "^1.1.1",
     "log-update": "^1.0.0",
